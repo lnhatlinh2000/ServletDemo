@@ -72,32 +72,43 @@ public class UserServlet extends HttpServlet {
         request.getRequestDispatcher("user-form.jsp").forward(request, response);
     }
 
-    private void insertUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void insertUser(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("pwd");
 
         Users users = new Users(name, email, password);
-        userDao.save(users);
-        response.sendRedirect("list");
+        try {
+            userDao.save(users);
+            response.sendRedirect("list");
+        } catch (Exception e) {
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
     }
 
-    private void updateUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void updateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("pwd");
 
         Users users = new Users(id, name, email, password);
-        userDao.update(users);
-        response.sendRedirect("list");
+        try {
+            userDao.update(users);
+            response.sendRedirect("list");
+        } catch (Exception e) {
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
     }
 
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int id =  Integer.parseInt(request.getParameter("id"));
         Users users = userDao.findById(Users.class, id);
-
-        userDao.delete(users);
-        response.sendRedirect("list");
+        try {
+            userDao.delete(users);
+            response.sendRedirect("list");
+        } catch (Exception e) {
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
     }
 }
